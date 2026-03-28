@@ -735,6 +735,7 @@ function TenderDetail({ darkMode }) {
                     <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={32}>
                         {riskChartData.map((entry, idx) => <Cell key={`cell-${idx}`} fill={entry.color} />)}
                     </Bar>
+                    
                     </BarChart>
                 </ResponsiveContainer>
                 <Divider sx={{ my: 2, borderColor: colors.border }} />
