@@ -25,7 +25,6 @@ import {
   TableRow,
   TablePagination,
   TableSortLabel,
-  Avatar,
   Tooltip,
   Popover,
   Stack,
@@ -33,11 +32,10 @@ import {
   Badge,
   Collapse,
   Grid,
-  Paper,
-  useMediaQuery,
-  useTheme,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
-import { alpha, styled } from '@mui/material/styles';
+import { alpha } from '@mui/material/styles';
 import {
   FiSearch,
   FiFilter,
@@ -48,6 +46,7 @@ import {
   FiChevronDown,
   FiChevronUp,
   FiInfo,
+  FiRefreshCw,
 } from 'react-icons/fi';
 import {
   MdWarning,
@@ -57,37 +56,9 @@ import {
   MdErrorOutline,
 } from 'react-icons/md';
 
-// Extended mock tender data with more entries
-const mockTenders = [
-  { id: 'TG-2024-0075', organization: "Buxoro viloyat Yo'l Xo'jaligi", name: 'IT infratuzilma modernizatsiyasi', amount: 130200000, date: '2024-07-05', region: 'Namangan', sector: 'Tibbiyot', riskScore: 120, riskLevel: 'critical', riskFactors: ['price', 'newCompany', 'address'], participants: [], marketAvg: 62000000 },
-  { id: 'TG-2024-0046', organization: "Buxoro viloyat Yo'l Xo'jaligi", name: 'Poliklinika jihozlash', amount: 252800000, date: '2024-05-18', region: 'Buxoro', sector: 'Energetika', riskScore: 120, riskLevel: 'critical', riskFactors: ['price', 'newCompany', 'address'], participants: [], marketAvg: 79000000 },
-  { id: 'TG-2024-0041', organization: "Samarqand viloyat Sog'liqni Saqlash Departamenti", name: 'Gaz tarmog\'i kengaytirish', amount: 182400000, date: '2024-02-11', region: 'Buxoro', sector: 'Energetika', riskScore: 120, riskLevel: 'critical', riskFactors: ['price', 'newCompany', 'address'], participants: [], marketAvg: 57000000 },
-  { id: 'TG-2024-0033', organization: "Termiz shahar Uy-joy Xo'jaligi", name: 'Ko\'prik ta\'mirlash', amount: 399000000, date: '2024-05-06', region: 'Buxoro', sector: 'Qishloq xo\'jaligi', riskScore: 120, riskLevel: 'critical', riskFactors: ['price', 'newCompany', 'address'], participants: [], marketAvg: 190000000 },
-  { id: 'TG-2024-0029', organization: "Qarshi shahar Sanitariya", name: 'Server uskunalari xaridi', amount: 1400000000, date: '2024-06-11', region: 'Toshkent shahri', sector: 'Qishloq xo\'jaligi', riskScore: 120, riskLevel: 'critical', riskFactors: ['price', 'newCompany', 'address'], participants: [], marketAvg: 485000000 },
-  { id: 'TG-2024-0021', organization: "Termiz shahar Uy-joy Xo'jaligi", name: 'Sug\'orish tizimi', amount: 1400000000, date: '2024-06-26', region: 'Namangan', sector: 'Tibbiyot', riskScore: 120, riskLevel: 'critical', riskFactors: ['price', 'newCompany', 'address'], participants: [], marketAvg: 441000000 },
-  { id: 'TG-2024-0020', organization: "Qarshi shahar Sanitariya", name: 'Sug\'orish tizimi', amount: 1100000000, date: '2024-02-02', region: 'Buxoro', sector: 'Energetika', riskScore: 120, riskLevel: 'critical', riskFactors: ['price', 'newCompany', 'address'], participants: [], marketAvg: 464000000 },
-  { id: 'TG-2024-0010', organization: "Namangan shahar hokimligi", name: 'Sport majmuasi qurilishi', amount: 451200000, date: '2024-07-04', region: 'Farg\'ona', sector: 'Transport', riskScore: 120, riskLevel: 'critical', riskFactors: ['price', 'newCompany', 'address'], participants: [], marketAvg: 141000000 },
-  { id: 'TG-2024-0079', organization: "Termiz shahar Uy-joy Xo'jaligi", name: 'Sug\'orish tizimi', amount: 854700000, date: '2024-02-27', region: 'Xorazm', sector: 'Transport', riskScore: 90, riskLevel: 'high', riskFactors: ['price', 'address'], participants: [], marketAvg: 407000000 },
-  { id: 'TG-2024-0066', organization: "Xorazm viloyat Qishloq Xo'jaligi", name: 'Elektr tarmog\'i yangilash', amount: 297600000, date: '2024-04-03', region: 'Toshkent shahri', sector: 'Ta\'lim', riskScore: 90, riskLevel: 'high', riskFactors: ['price', 'address'], participants: [], marketAvg: 93000000 },
-  { id: 'TG-2024-0061', organization: "Sirdaryo viloyat Transport Boshqarmasi", name: 'Ko\'cha chiroqlari o\'rnatish', amount: 709800000, date: '2024-10-24', region: 'Namangan', sector: 'Energetika', riskScore: 90, riskLevel: 'high', riskFactors: ['price', 'address'], participants: [], marketAvg: 338000000 },
-  { id: 'TG-2024-0060', organization: "Xorazm viloyat Qishloq Xo'jaligi", name: 'Suv ta\'minoti tizimi', amount: 203700000, date: '2024-04-06', region: 'Surxondaryo', sector: 'Ta\'lim', riskScore: 90, riskLevel: 'high', riskFactors: ['price', 'address'], participants: [], marketAvg: 97000000 },
-];
+const API_BASE_URL = 'https://shaffofai-production.up.railway.app/api';
 
-// Risk level configuration
-const riskLevels = {
-  critical: { label: 'Kritik', color: '#f44336', bg: 'rgba(244, 67, 54, 0.12)', icon: <MdErrorOutline /> },
-  high: { label: 'Yuqori', color: '#ff7043', bg: 'rgba(255, 112, 67, 0.12)', icon: <MdWarning /> },
-  medium: { label: "O'rtacha", color: '#ffb74d', bg: 'rgba(255, 183, 77, 0.12)', icon: <FiAlertTriangle /> },
-  low: { label: 'Past', color: '#4caf50', bg: 'rgba(76, 175, 80, 0.12)', icon: <FiCheckCircle /> },
-};
-
-// Risk factors mapping
-const riskFactorsMap = {
-  price: { label: 'Narx', color: '#f44336', icon: <MdAttachMoney size={14} />, tooltip: 'Narx anomaliyasi' },
-  newCompany: { label: 'Yangi', color: '#ff7043', icon: <MdBusiness size={14} />, tooltip: 'Yangi kompaniya' },
-  address: { label: 'Manzil', color: '#ab47bc', icon: <MdLocationOn size={14} />, tooltip: 'Manzil moslik' },
-};
-
+// Helper functions
 const formatAmount = (amount) => {
   if (amount >= 1e9) return `${(amount / 1e9).toFixed(1)}mlrd so'm`;
   if (amount >= 1e6) return `${(amount / 1e6).toFixed(1)}mln so'm`;
@@ -99,13 +70,99 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', year: 'numeric' });
 };
 
+// Region mapping for Uzbek names
+const regionMapping = {
+  'Ташкентская область': 'Toshkent viloyati',
+  'Тошкент шахри': 'Toshkent shahri',
+  'Самаркандская область': 'Samarqand',
+  'Ферганская область': "Farg'ona",
+  'Наманганская область': 'Namangan',
+  'Бухарская область': 'Buxoro',
+  'Андижанская область': 'Andijon',
+  'Кашкадарьинская область': 'Qashqadaryo',
+  'Сурхандарьинская область': 'Surxondaryo',
+  'Хорезмская область': 'Xorazm',
+  'Сырдарьинская область': 'Sirdaryo',
+  'Джизакская область': 'Jizzax',
+  'Навоийская область': 'Navoiy',
+  'Республика Каракалпакстан': 'Qoraqalpog\'iston',
+};
+
+const getRegionName = (region) => {
+  if (!region) return 'Noma\'lum';
+  return regionMapping[region] || region;
+};
+
+// Sector mapping for Uzbek names
+const sectorMapping = {
+  'Оборудование компьютерное, электронное и оптическое': 'IT va elektronika',
+  'Продукция и услуги сельского хозяйства и охоты': 'Qishloq xo\'jaligi',
+  'Средства лекарственные и материалы, применяемые в медицинских целях': 'Tibbiyot',
+  'Текстиль и изделия текстильные': 'To\'qimachilik',
+  'Вещества химические и продукты химические': 'Kimyo',
+  'Средства автотранспортные, прицепы и полуприцепы': 'Transport',
+  'Изделия металлические готовые, кроме машин и оборудования': 'Metall buyumlar',
+  'Продукты минеральные неметаллические прочие': 'Mineral mahsulotlar',
+  'Бумага и изделия из бумаги': 'Qog\'oz',
+  'Машины и оборудование, не включенные в другие группировки': 'Mashina va uskunalar',
+  'Мебель': 'Mebel',
+  'Работы строительные специализированные': 'Qurilish ishlari',
+  'Продукты пищевые': 'Oziq-ovqat',
+  'Услуги издательские': 'Nashriyot xizmatlari',
+};
+
+const getSectorName = (sector) => {
+  if (!sector) return 'Noma\'lum';
+  return sectorMapping[sector] || sector.split(' ').slice(0, 2).join(' ');
+};
+
+// Risk levels mapping
+const riskLevels = {
+  critical: { label: 'Kritik', color: '#f44336', bg: 'rgba(244, 67, 54, 0.12)', icon: <MdErrorOutline /> },
+  high: { label: 'Yuqori', color: '#ff7043', bg: 'rgba(255, 112, 67, 0.12)', icon: <MdWarning /> },
+  medium: { label: "O'rtacha", color: '#ffb74d', bg: 'rgba(255, 183, 77, 0.12)', icon: <FiAlertTriangle /> },
+  low: { label: 'Past', color: '#4caf50', bg: 'rgba(76, 175, 80, 0.12)', icon: <FiCheckCircle /> },
+};
+
+// Risk factors mapping
+const riskFactorsMap = {
+  priceAnomaly: { label: 'Narx', color: '#f44336', icon: <MdAttachMoney size={14} />, tooltip: 'Narx anomaliyasi' },
+  newCompany: { label: 'Yangi', color: '#ff7043', icon: <MdBusiness size={14} />, tooltip: 'Yangi kompaniya' },
+  addressMatch: { label: 'Manzil', color: '#ab47bc', icon: <MdLocationOn size={14} />, tooltip: 'Manzil moslik' },
+};
+
+// Transform API data to component format
+const transformTender = (apiTender) => {
+  const riskLevel = apiTender.riskLevel || 'low';
+  const riskFactors = [];
+  
+  if (apiTender.factors?.priceAnomaly?.triggered) riskFactors.push('priceAnomaly');
+  if (apiTender.factors?.newCompany?.triggered) riskFactors.push('newCompany');
+  if (apiTender.factors?.addressMatch?.triggered) riskFactors.push('addressMatch');
+  
+  return {
+    id: apiTender.id,
+    organization: apiTender.org || 'Noma\'lum tashkilot',
+    name: apiTender.name || 'Noma\'lum tender',
+    amount: apiTender.amount || 0,
+    date: apiTender.date || new Date().toISOString().split('T')[0],
+    region: getRegionName(apiTender.region),
+    sector: getSectorName(apiTender.sector),
+    riskScore: apiTender.score || 0,
+    riskLevel: riskLevel,
+    riskFactors: riskFactors,
+    participants: apiTender.participants || [],
+    marketAvg: apiTender.marketAvg || apiTender.amount || 0,
+    companyAgeMonths: apiTender.companyAgeMonths || 12,
+    factors: apiTender.factors || {},
+  };
+};
+
 function Tenders({ darkMode }) {
   const navigate = useNavigate();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  
-  // State
-  const [tenders] = useState(mockTenders);
+  const [tenders, setTenders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [apiError, setApiError] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRisk, setSelectedRisk] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState([]);
@@ -118,9 +175,67 @@ function Tenders({ darkMode }) {
   const [expandedRow, setExpandedRow] = useState(null);
   const [filterAnchorEl, setFilterAnchorEl] = useState(null);
 
+  // Fetch tenders from API
+  const fetchTenders = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/tenders/`);
+      if (!response.ok) {
+        throw new Error(`API responded with status ${response.status}`);
+      }
+      const data = await response.json();
+      const transformedData = data.map(transformTender);
+      setTenders(transformedData);
+      setApiError(false);
+    } catch (error) {
+      console.error('Error fetching tenders:', error);
+      setApiError(true);
+      // Fallback to mock data (from previous implementation)
+      const mockData = generateMockTenders();
+      setTenders(mockData);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Generate mock tenders for fallback
+  const generateMockTenders = () => {
+    const mock = [];
+    for (let i = 1; i <= 50; i++) {
+      const riskScore = Math.random() > 0.7 ? Math.floor(Math.random() * 60 + 60) : Math.floor(Math.random() * 60);
+      const riskLevel = riskScore >= 80 ? 'high' : riskScore >= 40 ? 'medium' : 'low';
+      const factors = [];
+      if (riskScore >= 80) {
+        if (Math.random() > 0.5) factors.push('priceAnomaly');
+        if (Math.random() > 0.6) factors.push('newCompany');
+        if (Math.random() > 0.7) factors.push('addressMatch');
+      } else if (riskScore >= 40) {
+        if (Math.random() > 0.6) factors.push('priceAnomaly');
+      }
+      mock.push({
+        id: `TG-2024-${String(i).padStart(4, '0')}`,
+        organization: `Tashkilot ${i}`,
+        name: `Tender nomi ${i}`,
+        amount: Math.floor(Math.random() * 500000000 + 1000000),
+        date: `2024-${Math.floor(Math.random() * 12 + 1).toString().padStart(2, '0')}-${Math.floor(Math.random() * 28 + 1).toString().padStart(2, '0')}`,
+        region: ['Toshkent', 'Samarqand', "Farg'ona", 'Namangan', 'Buxoro'][Math.floor(Math.random() * 5)],
+        sector: ['Qurilish', 'Tibbiyot', 'IT', "Ta'lim", 'Transport'][Math.floor(Math.random() * 5)],
+        riskScore: riskScore,
+        riskLevel: riskLevel,
+        riskFactors: factors,
+        marketAvg: Math.floor(Math.random() * 300000000 + 500000),
+      });
+    }
+    return mock;
+  };
+
+  useEffect(() => {
+    fetchTenders();
+  }, []);
+
   // Filter options
-  const regions = [...new Set(tenders.map(t => t.region))];
-  const sectors = [...new Set(tenders.map(t => t.sector))];
+  const regions = useMemo(() => [...new Set(tenders.map(t => t.region).filter(Boolean))], [tenders]);
+  const sectors = useMemo(() => [...new Set(tenders.map(t => t.sector).filter(Boolean))], [tenders]);
   const riskOptions = ['critical', 'high', 'medium', 'low'];
 
   // Filter and sort tenders
@@ -129,9 +244,9 @@ function Tenders({ darkMode }) {
 
     if (searchQuery) {
       filtered = filtered.filter(t => 
-        t.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        t.organization.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        t.name.toLowerCase().includes(searchQuery.toLowerCase())
+        t.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        t.organization?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        t.name?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -208,15 +323,44 @@ function Tenders({ darkMode }) {
     textSecondary: darkMode ? '#8892b0' : '#475569',
     border: darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.08)',
     blue: darkMode ? '#5c9eff' : '#168aad',
+    red: '#f44336',
+    orange: '#ff7043',
+    green: '#4caf50',
+    purple: '#ab47bc',
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress sx={{ color: colors.blue }} />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ p: { xs: 2, sm: 3, md: 4 }, minHeight: '100vh', width: '100%' }}>
       {/* Page Header */}
-
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+        <Box>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: colors.textPrimary }}>
+            Shubhali Tenderlar
+          </Typography>
+          <Typography variant="body2" sx={{ color: colors.textSecondary, mt: 0.5 }}>
+            Jami {totalCount} ta tender • {filteredTenders.filter(t => t.riskScore >= 80).length} ta yuqori xavfli
+          </Typography>
+        </Box>
+        {apiError && (
+          <Chip 
+            icon={<FiInfo size={14} />} 
+            label="API ulanmadi, demo ma'lumotlar ko'rsatilmoqda" 
+            size="small" 
+            sx={{ bgcolor: alpha(colors.orange, 0.1), color: colors.orange }} 
+          />
+        )}
+      </Box>
 
       {/* Search and Filters Bar */}
-      <Card sx={{ borderRadius: 1, mb: 2, bgcolor: colors.bgCard,  }}>
+      <Card sx={{ borderRadius: 1, mb: 3, bgcolor: colors.bgCard }}>
         <CardContent sx={{ p: 3 }}>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
             <TextField
@@ -272,8 +416,16 @@ function Tenders({ darkMode }) {
             >
               Eksport
             </Button>
+            <Button
+              variant="outlined"
+              startIcon={<FiRefreshCw />}
+              onClick={fetchTenders}
+              sx={{ borderRadius: 2, textTransform: 'none' }}
+            >
+              Yangilash
+            </Button>
             {activeFiltersCount > 0 && (
-              <Button onClick={clearFilters} sx={{ textTransform: 'none' }}>
+              <Button onClick={clearFilters} sx={{ textTransform: 'none', color: colors.textSecondary }}>
                 Tozalash
               </Button>
             )}
@@ -288,7 +440,7 @@ function Tenders({ darkMode }) {
         onClose={handleFilterClose}
         slotProps={{ paper: { sx: { width: 280, p: 2, bgcolor: colors.bgCard } } }}
       >
-        <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1.5 }}>Xavf darajasi</Typography>
+        <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1.5, color: colors.textPrimary }}>Xavf darajasi</Typography>
         <Box sx={{ mb: 2 }}>
           {riskOptions.map(risk => (
             <Box key={risk} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
@@ -302,13 +454,18 @@ function Tenders({ darkMode }) {
                     setSelectedRisk([...selectedRisk, risk]);
                   }
                 }}
+                sx={{ color: colors.textSecondary }}
               />
-              <Chip label={riskLevels[risk].label} size="small" sx={{ bgcolor: riskLevels[risk].bg, color: riskLevels[risk].color }} />
+              <Chip 
+                label={riskLevels[risk]?.label || risk} 
+                size="small" 
+                sx={{ bgcolor: riskLevels[risk]?.bg || alpha(colors.textSecondary, 0.1), color: riskLevels[risk]?.color || colors.textSecondary }} 
+              />
             </Box>
           ))}
         </Box>
-        <Divider sx={{ my: 1.5 }} />
-        <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>Viloyat</Typography>
+        <Divider sx={{ my: 1.5, borderColor: colors.border }} />
+        <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: colors.textPrimary }}>Viloyat</Typography>
         <FormControl size="small" fullWidth sx={{ mb: 2 }}>
           <Select
             multiple
@@ -319,6 +476,7 @@ function Tenders({ darkMode }) {
                 {selected.map(v => <Chip key={v} label={v} size="small" />)}
               </Box>
             )}
+            sx={{ color: colors.textPrimary }}
           >
             {regions.map(region => (
               <MenuItem key={region} value={region}>
@@ -328,7 +486,7 @@ function Tenders({ darkMode }) {
             ))}
           </Select>
         </FormControl>
-        <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>Soha</Typography>
+        <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: colors.textPrimary }}>Soha</Typography>
         <FormControl size="small" fullWidth>
           <Select
             multiple
@@ -339,6 +497,7 @@ function Tenders({ darkMode }) {
                 {selected.map(v => <Chip key={v} label={v} size="small" />)}
               </Box>
             )}
+            sx={{ color: colors.textPrimary }}
           >
             {sectors.map(sector => (
               <MenuItem key={sector} value={sector}>
@@ -350,8 +509,8 @@ function Tenders({ darkMode }) {
         </FormControl>
       </Menu>
 
-      {/* Tenders Table - Full width and expanded */}
-      <Card sx={{ borderRadius: 1, bgcolor: colors.bgCard,  overflow: 'hidden' }}>
+      {/* Tenders Table */}
+      <Card sx={{ borderRadius: 1, bgcolor: colors.bgCard, overflow: 'hidden' }}>
         <TableContainer sx={{ overflowX: 'auto', width: '100%' }}>
           <Table sx={{ minWidth: 1100, width: '100%' }}>
             <TableHead>
@@ -370,7 +529,7 @@ function Tenders({ darkMode }) {
             </TableHead>
             <TableBody>
               {paginatedTenders.map((tender, idx) => {
-                const riskLevel = riskLevels[tender.riskLevel];
+                const riskLevel = riskLevels[tender.riskLevel] || riskLevels.low;
                 const isExpanded = expandedRow === tender.id;
                 
                 return (
@@ -402,10 +561,10 @@ function Tenders({ darkMode }) {
                       </TableCell>
                       <TableCell>
                         <Typography variant="body2" sx={{ fontWeight: 500, color: colors.textPrimary }}>
-                          {tender.organization}
+                          {tender.organization?.length > 40 ? `${tender.organization.substring(0, 40)}...` : tender.organization}
                         </Typography>
                         <Typography variant="caption" sx={{ color: colors.textSecondary, display: 'block' }}>
-                          {tender.name}
+                          {tender.name?.length > 50 ? `${tender.name.substring(0, 50)}...` : tender.name}
                         </Typography>
                       </TableCell>
                       <TableCell>
@@ -455,20 +614,20 @@ function Tenders({ darkMode }) {
                       <TableCell>
                         <Box sx={{ display: 'flex', gap: 0.5 }}>
                           {tender.riskFactors.map(factor => (
-                            <Tooltip key={factor} title={riskFactorsMap[factor].tooltip}>
+                            <Tooltip key={factor} title={riskFactorsMap[factor]?.tooltip || factor}>
                               <Box
                                 sx={{
                                   width: 28,
                                   height: 28,
                                   borderRadius: '50%',
-                                  bgcolor: alpha(riskFactorsMap[factor].color, 0.15),
-                                  color: riskFactorsMap[factor].color,
+                                  bgcolor: alpha(riskFactorsMap[factor]?.color || colors.textSecondary, 0.15),
+                                  color: riskFactorsMap[factor]?.color || colors.textSecondary,
                                   display: 'flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
                                 }}
                               >
-                                {riskFactorsMap[factor].icon}
+                                {riskFactorsMap[factor]?.icon || <FiInfo size={14} />}
                               </Box>
                             </Tooltip>
                           ))}
@@ -493,7 +652,7 @@ function Tenders({ darkMode }) {
                       </TableCell>
                     </TableRow>
                     
-                    {/* Expanded Row - Risk Details */}
+                    {/* Expanded Row */}
                     {isExpanded && (
                       <TableRow>
                         <TableCell colSpan={10} sx={{ p: 0, borderBottom: 'none' }}>
@@ -501,34 +660,36 @@ function Tenders({ darkMode }) {
                             <Box sx={{ p: 3, bgcolor: alpha(colors.textPrimary, 0.02), borderTop: `1px solid ${colors.border}` }}>
                               <Grid container spacing={3}>
                                 <Grid size={{ xs: 12, md: 6 }}>
-                                  <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2 }}>
+                                  <Typography variant="subtitle2" sx={{ fontWeight: 600, color: colors.textPrimary, mb: 2 }}>
                                     Risk omillari tahlili
                                   </Typography>
                                   <Stack spacing={2}>
-                                    {tender.riskFactors.map(factor => (
-                                      <Box
-                                        key={factor}
-                                        sx={{
-                                          p: 2,
-                                          borderRadius: 2,
-                                          bgcolor: alpha(riskFactorsMap[factor].color, 0.08),
-                                          borderLeft: `3px solid ${riskFactorsMap[factor].color}`,
-                                        }}
-                                      >
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                                          {riskFactorsMap[factor].icon}
-                                          <Typography variant="body2" sx={{ fontWeight: 600, color: riskFactorsMap[factor].color }}>
-                                            {riskFactorsMap[factor].label} anomaliyasi
+                                    {tender.riskFactors.length > 0 ? tender.riskFactors.map(factor => {
+                                      const factorInfo = riskFactorsMap[factor];
+                                      return (
+                                        <Box
+                                          key={factor}
+                                          sx={{
+                                            p: 2,
+                                            borderRadius: 2,
+                                            bgcolor: alpha(factorInfo?.color || colors.textSecondary, 0.08),
+                                            borderLeft: `3px solid ${factorInfo?.color || colors.textSecondary}`,
+                                          }}
+                                        >
+                                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                                            {factorInfo?.icon}
+                                            <Typography variant="body2" sx={{ fontWeight: 600, color: factorInfo?.color || colors.textSecondary }}>
+                                              {factorInfo?.label} anomaliyasi
+                                            </Typography>
+                                          </Box>
+                                          <Typography variant="caption" sx={{ color: colors.textSecondary }}>
+                                            {factor === 'priceAnomaly' && `Tender summasi bozor narxidan ${(tender.amount / tender.marketAvg).toFixed(1)}x yuqori (+40 ball)`}
+                                            {factor === 'newCompany' && `G'olib kompaniya 6 oydan kam oldin tashkil etilgan (+30 ball)`}
+                                            {factor === 'addressMatch' && `Ishtirokchilar bir xil manzilda ro'yxatdan o'tgan (+50 ball)`}
                                           </Typography>
                                         </Box>
-                                        <Typography variant="caption" sx={{ color: colors.textSecondary }}>
-                                          {factor === 'price' && `Tender summasi bozor narxidan ${(tender.amount / tender.marketAvg).toFixed(1)}x yuqori (+40 ball)`}
-                                          {factor === 'newCompany' && `G'olib kompaniya 6 oydan kam oldin tashkil etilgan (+30 ball)`}
-                                          {factor === 'address' && `Ishtirokchilar bir xil manzilda ro'yxatdan o'tgan (+50 ball)`}
-                                        </Typography>
-                                      </Box>
-                                    ))}
-                                    {tender.riskFactors.length === 0 && (
+                                      );
+                                    }) : (
                                       <Typography variant="body2" sx={{ color: colors.green }}>
                                         Hech qanday xavf omili aniqlanmadi
                                       </Typography>
@@ -536,14 +697,18 @@ function Tenders({ darkMode }) {
                                   </Stack>
                                 </Grid>
                                 <Grid size={{ xs: 12, md: 6 }}>
-                                  <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2 }}>
+                                  <Typography variant="subtitle2" sx={{ fontWeight: 600, color: colors.textPrimary, mb: 2 }}>
                                     AI tavsiyasi
                                   </Typography>
                                   <Box sx={{ p: 2, borderRadius: 2, bgcolor: alpha(colors.blue, 0.05), border: `1px solid ${alpha(colors.blue, 0.2)}` }}>
                                     <Typography variant="body2" sx={{ color: colors.textSecondary, mb: 1 }}>
-                                      <strong>⚠️ Yuqori xavfli tender</strong> — ushbu tender barcha uchta xavf mezoniga mos keladi.
-                                      Tender summasi bozor narxidan haddan tashqari yuqori, g'olib kompaniya yangi tashkil etilgan va
-                                      ishtirokchilar bir xil manzilda ro'yxatdan o'tgan. Qo'shimcha tekshiruv tavsiya etiladi.
+                                      {tender.riskScore >= 80 ? (
+                                        <><strong>⚠️ Yuqori xavfli tender</strong> — ushbu tender bir nechta xavf mezonlariga mos keladi. Qo'shimcha tekshiruv tavsiya etiladi.</>
+                                      ) : tender.riskScore >= 40 ? (
+                                        <><strong>⚠️ O'rtacha xavfli tender</strong> — tenderda ba'zi xavf omillari mavjud. Kuzatuvda bo'lishi kerak.</>
+                                      ) : (
+                                        <><strong>✓ Past xavfli tender</strong> — tender normal holatda. Hech qanday xavf omili aniqlanmadi.</>
+                                      )}
                                     </Typography>
                                     <Button
                                       size="small"
