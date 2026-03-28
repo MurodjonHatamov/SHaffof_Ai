@@ -681,71 +681,71 @@ function TenderDetail({ darkMode }) {
       </Card>
 
       {/* Risk Factors Breakdown */}
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid size={{ xs: 12, md: 7 }}>
-          <Card sx={{ borderRadius: 1, bgcolor: colors.bgCard, border: `1px solid ${colors.border}` }}>
-            <CardContent>
-              <Typography variant="h6" sx={{ fontWeight: 700, color: colors.textPrimary, mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
-                <FaChartLine size={18} /> Risk Omillari Tahlili
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12, md: 4 }}>
-                  <Box sx={{ p: 2, borderRadius: 1, bgcolor: alpha(colors.red, 0.08), borderLeft: `3px solid ${colors.red}` }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><MdAttachMoney size={18} style={{ color: colors.red }} /><Typography variant="subtitle2" sx={{ fontWeight: 600, color: colors.red }}>Narx Anomaliyasi</Typography><Chip label="Faol!" size="small" sx={{ bgcolor: colors.red, color: 'white', height: 20, fontSize: '0.65rem', borderRadius: 1 }} /></Box>
-                      <Typography variant="h6" sx={{ fontWeight: 800, color: colors.red }}>+{tender.factors.priceAnomaly.points}/{tender.factors.priceAnomaly.maxPoints}</Typography>
+        <Grid container spacing={3} sx={{ mb: 3, flexDirection: { xs: 'column', md: 'column' } }}>
+            <Grid size={{ xs: 12, md: 7,width: '100%' }}>
+            <Card sx={{ borderRadius: 1, bgcolor: colors.bgCard, border: `1px solid ${colors.border}` }}>
+                <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 700, color: colors.textPrimary, mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <FaChartLine size={18} /> Risk Omillari Tahlili
+                </Typography>
+                <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Box sx={{ p: 2, borderRadius: 1, bgcolor: alpha(colors.red, 0.08), borderLeft: `3px solid ${colors.red}` }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><MdAttachMoney size={18} style={{ color: colors.red }} /><Typography variant="subtitle2" sx={{ fontWeight: 600, color: colors.red }}>Narx Anomaliyasi</Typography><Chip label="Faol!" size="small" sx={{ bgcolor: colors.red, color: 'white', height: 20, fontSize: '0.65rem', borderRadius: 1 }} /></Box>
+                        <Typography variant="h6" sx={{ fontWeight: 800, color: colors.red }}>+{tender.factors.priceAnomaly.points}/{tender.factors.priceAnomaly.maxPoints}</Typography>
+                        </Box>
+                        <Typography variant="caption" sx={{ color: colors.textSecondary }}>{tender.factors.priceAnomaly.desc}</Typography>
                     </Box>
-                    <Typography variant="caption" sx={{ color: colors.textSecondary }}>{tender.factors.priceAnomaly.desc}</Typography>
-                  </Box>
-                </Grid>
-                <Grid size={{ xs: 12, md: 4 }}>
-                  <Box sx={{ p: 2, borderRadius: 1, bgcolor: alpha(colors.textSecondary, 0.05) }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><MdBusiness size={18} style={{ color: colors.textSecondary }} /><Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Yangi Kompaniya</Typography></Box>
-                      <Typography variant="h6" sx={{ fontWeight: 800, color: colors.textSecondary }}>+{tender.factors.newCompany.points}/{tender.factors.newCompany.maxPoints}</Typography>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Box sx={{ p: 2, borderRadius: 1, bgcolor: alpha(colors.textSecondary, 0.05) }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><MdBusiness size={18} style={{ color: colors.textSecondary }} /><Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Yangi Kompaniya</Typography></Box>
+                        <Typography variant="h6" sx={{ fontWeight: 800, color: colors.textSecondary }}>+{tender.factors.newCompany.points}/{tender.factors.newCompany.maxPoints}</Typography>
+                        </Box>
+                        <Typography variant="caption" sx={{ color: colors.textSecondary }}>{tender.factors.newCompany.desc}</Typography>
                     </Box>
-                    <Typography variant="caption" sx={{ color: colors.textSecondary }}>{tender.factors.newCompany.desc}</Typography>
-                  </Box>
-                </Grid>
-                <Grid size={{ xs: 12, md: 4 }}>
-                  <Box sx={{ p: 2, borderRadius: 1, bgcolor: alpha(colors.purple, 0.08), borderLeft: `3px solid ${colors.purple}` }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><MdLocationOn size={18} style={{ color: colors.purple }} /><Typography variant="subtitle2" sx={{ fontWeight: 600, color: colors.purple }}>Manzil Moslik</Typography><Chip label="Faol!" size="small" sx={{ bgcolor: colors.purple, color: 'white', height: 20, fontSize: '0.65rem', borderRadius: 1 }} /></Box>
-                      <Typography variant="h6" sx={{ fontWeight: 800, color: colors.purple }}>+{tender.factors.addressMatch.points}/{tender.factors.addressMatch.maxPoints}</Typography>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Box sx={{ p: 2, borderRadius: 1, bgcolor: alpha(colors.purple, 0.08), borderLeft: `3px solid ${colors.purple}` }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><MdLocationOn size={18} style={{ color: colors.purple }} /><Typography variant="subtitle2" sx={{ fontWeight: 600, color: colors.purple }}>Manzil Moslik</Typography><Chip label="Faol!" size="small" sx={{ bgcolor: colors.purple, color: 'white', height: 20, fontSize: '0.65rem', borderRadius: 1 }} /></Box>
+                        <Typography variant="h6" sx={{ fontWeight: 800, color: colors.purple }}>+{tender.factors.addressMatch.points}/{tender.factors.addressMatch.maxPoints}</Typography>
+                        </Box>
+                        <Typography variant="caption" sx={{ color: colors.textSecondary }}>{tender.factors.addressMatch.desc}</Typography>
                     </Box>
-                    <Typography variant="caption" sx={{ color: colors.textSecondary }}>{tender.factors.addressMatch.desc}</Typography>
-                  </Box>
+                    </Grid>
                 </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
+                </CardContent>
+            </Card>
+            </Grid>
 
-        {/* Risk Chart - Vertical Bar Chart */}
-        <Grid size={{ xs: 12, md: 5 }}>
-          <Card sx={{ borderRadius: 1, bgcolor: colors.bgCard, border: `1px solid ${colors.border}`, height: '100%' }}>
-            <CardContent>
-              <Typography variant="h6" sx={{ fontWeight: 700, color: colors.textPrimary, mb: 2 }}>Ball Taqsimoti</Typography>
-              <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={riskChartData} layout="vertical" margin={{ left: 100, right: 20, top: 20, bottom: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={colors.border} horizontal={true} />
-                  <XAxis type="number" domain={[0, 55]} stroke={colors.textSecondary} />
-                  <YAxis type="category" dataKey="name" stroke={colors.textSecondary} width={100} tick={{ fontSize: 11 }} />
-                  <RechartsTooltip contentStyle={{ backgroundColor: colors.bgElevated, borderRadius: 8, border: `1px solid ${colors.border}` }} />
-                  <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={32}>
-                    {riskChartData.map((entry, idx) => <Cell key={`cell-${idx}`} fill={entry.color} />)}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-              <Divider sx={{ my: 2, borderColor: colors.border }} />
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
-                <Box><Typography variant="caption" sx={{ color: colors.textSecondary }}>Berilgan ball</Typography><Typography variant="body2" sx={{ fontWeight: 600, color: colors.textPrimary }}>{tender.riskScore} / 120</Typography></Box>
-                <Box><Typography variant="caption" sx={{ color: colors.textSecondary }}>Maksimal ball</Typography><Typography variant="body2" sx={{ fontWeight: 600, color: colors.textPrimary }}>120</Typography></Box>
-              </Box>
-            </CardContent>
-          </Card>
+            {/* Risk Chart - Vertical Bar Chart */}
+            <Grid size={{ xs: 12, md: 5 }}>
+            <Card sx={{ borderRadius: 1, bgcolor: colors.bgCard, border: `1px solid ${colors.border}`, height: '100%' }}>
+                <CardContent>
+                <Typography variant="h6" sx={{ fontWeight: 700, color: colors.textPrimary, mb: 2 }}>Ball Taqsimoti</Typography>
+                <ResponsiveContainer width="100%" height={260}>
+                    <BarChart data={riskChartData} layout="vertical" margin={{ left: 100, right: 20, top: 20, bottom: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={colors.border} horizontal={true} />
+                    <XAxis type="number" domain={[0, 55]} stroke={colors.textSecondary} />
+                    <YAxis type="category" dataKey="name" stroke={colors.textSecondary} width={100} tick={{ fontSize: 11 }} />
+                    <RechartsTooltip contentStyle={{ backgroundColor: colors.bgElevated, borderRadius: 8, border: `1px solid ${colors.border}` }} />
+                    <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={32}>
+                        {riskChartData.map((entry, idx) => <Cell key={`cell-${idx}`} fill={entry.color} />)}
+                    </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
+                <Divider sx={{ my: 2, borderColor: colors.border }} />
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+                    <Box><Typography variant="caption" sx={{ color: colors.textSecondary }}>Berilgan ball</Typography><Typography variant="body2" sx={{ fontWeight: 600, color: colors.textPrimary }}>{tender.riskScore} / 120</Typography></Box>
+                    <Box><Typography variant="caption" sx={{ color: colors.textSecondary }}>Maksimal ball</Typography><Typography variant="body2" sx={{ fontWeight: 600, color: colors.textPrimary }}>120</Typography></Box>
+                </Box>
+                </CardContent>
+            </Card>
+            </Grid>
         </Grid>
-      </Grid>
 
       {/* Network Graph + Timeline */}
       <Grid container spacing={3}>

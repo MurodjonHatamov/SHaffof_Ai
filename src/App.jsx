@@ -9,6 +9,8 @@ import Navbar from './components/Navbar';
 import Tenders from './pages/Tenders';
 import Notifications from './pages/Notifications';
 import TenderDetail from './pages/TenderDetail';
+import Settings from './pages/Settings';
+import Help from './pages/Help';
 
 // Light mode theme
 const lightTheme = createTheme({
@@ -87,6 +89,9 @@ function App() {
                 <Route path="/tenders" element={<Tenders darkMode={darkMode} />} />
                 <Route path="/notifications" element={<Notifications darkMode={darkMode} />} />
                 <Route path="/tender/:id" element={<TenderDetail darkMode={darkMode} />} />
+                <Route path="/settings" element={<Settings darkMode={darkMode} setDarkMode={setDarkMode} />} />
+                <Route path="/help" element={<Help darkMode={darkMode} />} />
+
                 {/* ... other routes ... */}
               </Routes>
             </Box>
