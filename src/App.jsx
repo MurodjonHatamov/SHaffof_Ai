@@ -11,6 +11,12 @@ import Notifications from './pages/Notifications';
 import TenderDetail from './pages/TenderDetail';
 import Settings from './pages/Settings';
 import Help from './pages/Help';
+import AdvancedAnalytics from './pages/analytics/AdvancedAnalytics';
+
+import NetworkAnalytics from './pages/analytics/NetworkAnalytics';
+import RiskDistribution from './pages/analytics/RiskDistribution';
+import RegionalAnalytics from './pages/analytics/RegionalAnalytics';
+
 
 // Light mode theme
 const lightTheme = createTheme({
@@ -91,7 +97,10 @@ function App() {
                 <Route path="/tender/:id" element={<TenderDetail darkMode={darkMode} />} />
                 <Route path="/settings" element={<Settings darkMode={darkMode} setDarkMode={setDarkMode} />} />
                 <Route path="/help" element={<Help darkMode={darkMode} />} />
-
+<Route path="/analytics/advanced" element={<AdvancedAnalytics darkMode={darkMode} />} />
+<Route path="/analytics/risk-distribution" element={<RiskDistribution darkMode={darkMode} />} />
+<Route path="/analytics/regional" element={<RegionalAnalytics darkMode={darkMode} />} />
+<Route path="/analytics/network" element={<NetworkAnalytics darkMode={darkMode} />} />
                 {/* ... other routes ... */}
               </Routes>
             </Box>
